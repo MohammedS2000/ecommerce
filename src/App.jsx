@@ -10,6 +10,7 @@ import Login from './component/Login';
 import SignUp from './component/SignUp';
 import { AuthContextProvider } from './context/AuthContext';
 import ProtectedRoute from './component/ProtectedRoute';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 const myRouter = createBrowserRouter(
   [
@@ -28,12 +29,17 @@ const myRouter = createBrowserRouter(
   ]
 )
 
-export default function App() {
-  return <>
-    <AuthContextProvider>
-      <RouterProvider router={myRouter} />
-    </AuthContextProvider>
+const myClient = new QueryClient();
 
-  </>
+export default function App() {
+  return (
+			<>
+				<QueryClientProvider client={myClient}>
+					<AuthContextProvider>
+						<RouterProvider router={myRouter} />
+					</AuthContextProvider>
+				</QueryClientProvider>
+			</>
+		);
 }
 

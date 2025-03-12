@@ -20,7 +20,7 @@ export default function Header() {
     }
 
     return (
-        <div className='bg-gray-200 py-3 mb-6'>
+        <div className='bg-gray-200 py-3'>
             <div className="container mx-auto">
 
                 <nav className="flex justify-between items-center">
@@ -39,7 +39,7 @@ export default function Header() {
                             </li>
                             <li className='px-2 hover:text-slate-400 duration-300 text-slate-600 font-semibold'>
                                 <Link to="/Categories">
-                                    Categorie
+                                    Categories
                                 </Link>
                             </li>
                             <li className='px-2 hover:text-slate-400 duration-300 text-slate-600 font-semibold'>

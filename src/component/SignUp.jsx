@@ -85,7 +85,7 @@ export default function SignUp() {
 
 
   return (
-    <div className='mx-auto container'>
+    <div className='mx-auto container mt-6'>
 
       {isSuccess ? <div className='bg-green-500 text-white p-2 text-center font-semibold rounded-md'> You successfuly made an account</div> : ""}
       {isError ? <div className='bg-red-500 text-white p-2 text-center font-semibold rounded-md'> {isError}</div> : ""}
