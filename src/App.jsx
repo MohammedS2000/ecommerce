@@ -15,23 +15,58 @@ import ProductDetails from './component/ProductDetails';
 import CartContextProvider from './context/CartContext';
 import { Toaster } from 'react-hot-toast';
 
-const myRouter = createBrowserRouter(
-  [
-    {
-      path: "/", element: <Layout />, children: [
-        { index: true, element: <Home /> },
-        { path: "cart", element: <ProtectedRoute><Cart /></ProtectedRoute> },
-        { path: "home", element: <Home /> },
-        { path: "login", element: <Login /> },
-        { path: "signup", element: <SignUp /> },
-        { path: "categories", element: <ProtectedRoute><Categories /></ProtectedRoute> },
-        { path: "brands", element: <ProtectedRoute><Brands /></ProtectedRoute> },
-        { path: "productDetails/:id/:category", element: <ProtectedRoute><ProductDetails /></ProtectedRoute> },
-        { path: "*", element: <NotFound /> }
-      ]
-    }
-  ]
-)
+const myRouter = createBrowserRouter([
+	{
+		path: "/",
+		element: <Layout />,
+		children: [
+			{ index: true, element: <Login /> },
+			{
+				path: "cart",
+				element: (
+					<ProtectedRoute>
+						<Cart />
+					</ProtectedRoute>
+				),
+			},
+			{
+				path: "home",
+				element: (
+					<ProtectedRoute>
+						<Home />
+					</ProtectedRoute>
+				),
+			},
+			{ path: "login", element: <Login /> },
+			{ path: "signup", element: <SignUp /> },
+			{
+				path: "categories",
+				element: (
+					<ProtectedRoute>
+						<Categories />
+					</ProtectedRoute>
+				),
+			},
+			{
+				path: "brands",
+				element: (
+					<ProtectedRoute>
+						<Brands />
+					</ProtectedRoute>
+				),
+			},
+			{
+				path: "productDetails/:id/:category",
+				element: (
+					<ProtectedRoute>
+						<ProductDetails />
+					</ProtectedRoute>
+				),
+			},
+			{ path: "*", element: <NotFound /> },
+		],
+	},
+]);
 
 const myClient = new QueryClient();
 

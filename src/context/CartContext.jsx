@@ -11,7 +11,7 @@ export default function CartContextProvider( {children} ) {
 
   const [numOfCartItems, setNumOfCartItems] = useState(0)
   const [totalCartPrice, setTotalCartPrice] = useState(0)
-  const [allProducts, setAllProducts] = useState(null)
+  const [allProducts, setAllProducts] = useState([])
 
   function getUserCart() {
     axios.get('https://ecommerce.routemisr.com/api/v1/cart',{ 
@@ -27,13 +27,52 @@ export default function CartContextProvider( {children} ) {
     })
   }
 
+  async function clearCart() {
+    const res = await axios
+					.delete("https://ecommerce.routemisr.com/api/v1/cart", {
+						headers: { token: localStorage.getItem("tkn") },
+					})
+					.then((res) => {
+						setTotalCartPrice(0);
+						setAllProducts([]);
+						setNumOfCartItems(0);
+						return true;
+					})
+					.catch((err) => {
+						console.log(err);
+						return false;
+					});
+				return res;
+  }
+
+  async function deleteItem(id) {
+    const res =await axios
+					.delete(`https://ecommerce.routemisr.com/api/v1/cart/${id}`, {
+						headers: { token: localStorage.getItem("tkn") },
+					})
+					.then((res) => {
+						setTotalCartPrice(res.data.data.totalCartPrice);
+						setAllProducts(res.data.data.products);
+						setNumOfCartItems(res.data.numOfCartItems);
+						return true;
+					})
+					.catch((err) => {
+						console.log(err);
+						return false;
+					});
+          return res
+        
+  }
+
   async function updateCount(id , newCount) {
     const booleanFlag = await axios.put(
 						`https://ecommerce.routemisr.com/api/v1/cart/${id}`,
 						{
 							count: newCount,
 						},
-						{ headers: { token: localStorage.getItem("tkn") } },
+						{ 
+              headers: { token: localStorage.getItem("tkn") }
+            },
 					)
 					.then((res) => {
 						setTotalCartPrice(res.data.data.totalCartPrice);
@@ -71,7 +110,9 @@ export default function CartContextProvider( {children} ) {
     numOfCartItems,
     allProducts,
     totalCartPrice,
-    updateCount} }>
+    updateCount,
+    deleteItem,
+    clearCart} }>
 
     {children}
 

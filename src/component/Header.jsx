@@ -34,9 +34,6 @@ export default function Header() {
 										<li className="px-2 hover:text-slate-400 duration-300 text-slate-600 font-semibold">
 											<Link to="/Home">Home</Link>
 										</li>
-										<li className="px-2 relative hover:text-slate-400 duration-300 text-slate-600 font-semibold">
-											<Link to="/Cart">Cart</Link>
-										</li>
 										<li className="px-2 hover:text-slate-400 duration-300 text-slate-600 font-semibold">
 											<Link to="/Categories">Categories</Link>
 										</li>
