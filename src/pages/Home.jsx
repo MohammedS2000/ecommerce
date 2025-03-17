@@ -1,34 +1,66 @@
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { useContext } from "react";
 import { RotateLoader } from "react-spinners";
 import { faStar } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import SAR from "../component/SAR";
 import { useQuery } from "@tanstack/react-query";
+import SimpleSlider from "../component/Slider";
+import {Link} from "react-router-dom";
+import { cartContext } from "../context/CartContext";
+import toast from "react-hot-toast";
 
 
 export default function Home() {
-	const [allProducts, setAllProducts] = useState(null);
 
+	const {addProductToCart} = useContext(cartContext)
+
+	async function addProduct(id) {
+		const res = await addProductToCart(id);
+
+		
+		if (res) {
+        toast.success('Added Successfuly', {duration: 1500, position: 'top-center'})
+    }
+    else {
+        toast.error('Error Occurred', {duration: 1500, position: 'top-center'})
+    }
+    
+	}
+	
 	async function getAllProducts() {
-		const res= await axios.get("https://ecommerce.routemisr.com/api/v1/products");
+		return await axios.get("https://ecommerce.routemisr.com/api/v1/products");
 
-		setAllProducts(res.data.data);
 	}
 
-	// const x = useQuery('getAllProducts', getAllProducts);
-	useEffect(() => {
-		getAllProducts();
-	}, []);
+	const {isLoading, data, error} = useQuery({
+		queryKey: ['getAllProducts'],
+		queryFn: getAllProducts,
+	});
+	
+	
+
+	if (isLoading) {
+		return <div className="flex w-full h-full absolute bg-white justify-center items-center">
+					<RotateLoader color="#22c55e" size={40} margin={20}/>
+				</div>
+	}
 
 	return (
 		<>
-			{allProducts ? (
-				<div className="container mx-auto my-6">
-					<div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
-						{allProducts.map((product) => (
-							<div key={product.name} className="">
-								<div className="hover:shadow-md hover:border cursor-pointer hover:border-green-500 p-2 rounded-md">
+			<div className="container mx-auto my-8">
+				
+				<SimpleSlider />
+				<div className="grid grid-cols-2 mt-7  md:grid-cols-4 lg:grid-cols-6 gap-4">
+					{data.data.data.map((product) => (
+						<div
+							key={product.name}
+							className="hover:shadow-md hover:border p-2 cursor-pointer  hover:border-green-500 rounded-md"
+						>
+							<Link
+								to={`/productDetails/${product.id}/${product.category.name}`}
+							>
+								<div className="">
 									<img
 										src={product.imageCover}
 										alt="product-image"
@@ -40,9 +72,10 @@ export default function Home() {
 									<h2 className="text-lg font-semibold mb-1">
 										{product.title.split(" ").slice(0, 2).join(" ")}
 									</h2>
+
 									<div className="flex justify-between">
 										<div className="font-semibold">
-											<SAR price={product.price} />
+											<SAR price={product.price / 4} />
 										</div>
 
 										<div className="flex justify-center items-center">
@@ -56,15 +89,17 @@ export default function Home() {
 										</div>
 									</div>
 								</div>
-							</div>
-						))}
-					</div>
+							</Link>
+							<button
+								onClick={() => addProduct(product.id)}
+								className="text-white my-2  font-semibold border rounded-md bg-green-600 p-2 hover:bg-green-400 duration-300 w-full"
+							>
+								Add to cart
+							</button>
+						</div>
+					))}
 				</div>
-			) : (
-				<div className="flex w-full h-full absolute bg-white justify-center items-center">
-					<RotateLoader color="#22c55e" size={40} margin={20}/>
-				</div>
-			)}
+			</div>
 		</>
 	);
 }

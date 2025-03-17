@@ -11,6 +11,9 @@ import SignUp from './component/SignUp';
 import { AuthContextProvider } from './context/AuthContext';
 import ProtectedRoute from './component/ProtectedRoute';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import ProductDetails from './component/ProductDetails';
+import CartContextProvider from './context/CartContext';
+import { Toaster } from 'react-hot-toast';
 
 const myRouter = createBrowserRouter(
   [
@@ -23,6 +26,7 @@ const myRouter = createBrowserRouter(
         { path: "signup", element: <SignUp /> },
         { path: "categories", element: <ProtectedRoute><Categories /></ProtectedRoute> },
         { path: "brands", element: <ProtectedRoute><Brands /></ProtectedRoute> },
+        { path: "productDetails/:id/:category", element: <ProtectedRoute><ProductDetails /></ProtectedRoute> },
         { path: "*", element: <NotFound /> }
       ]
     }
@@ -36,9 +40,14 @@ export default function App() {
 			<>
 				<QueryClientProvider client={myClient}>
 					<AuthContextProvider>
-						<RouterProvider router={myRouter} />
-					</AuthContextProvider>
+          <CartContextProvider>
+						
+							<RouterProvider router={myRouter} />
+						
+					</CartContextProvider>
+          </AuthContextProvider>
 				</QueryClientProvider>
+        <Toaster/>
 			</>
 		);
 }
