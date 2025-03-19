@@ -1,10 +1,14 @@
-import React, { useContext } from 'react'
+import React, { useContext, useState } from 'react'
 import { cartContext } from '../context/CartContext'
 import { faTrashCan } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { RotateLoader } from 'react-spinners';
+import { PulseLoader, RotateLoader } from 'react-spinners';
+import SAR from '../component/SAR';
+import { Link } from 'react-router-dom';
 
 export default function Cart() {
+
+	const [isPushed, setPushed] = useState(false)
 
   const {updateCount,allProducts,totalCartPrice,deleteItem,clearCart} = useContext(cartContext)
 
@@ -18,61 +22,90 @@ export default function Cart() {
 	}
 
 	async function updateMyProduct(id, newCount) {
-
-
+		
 		const res = await updateCount(id , newCount)
 	}
 
 	async function myDeleteItem(id) {
-		const res = await deleteItem(id)
+		setPushed(true);
+
+		setTimeout(() => {
+			setPushed(false);
+		}, 1000);
+		const res = await deleteItem(id);
 	}
 
   return (
 			<>
 				{allProducts.length ? (
 					<div className="container mx-auto my-8">
-						<div className="mb-3 flex justify-between">
+						<div className="mb-3 flex justify-between items-center">
 							<div>
 								<h2 className="text-3xl font-semibold">Shop Cart:</h2>
-								<p className="text-green-500 font-semibold ">
-									Total Cart Price: {totalCartPrice / 4}
+								<p className="font-semibold ">
+									<span className="text-green-500">Total Cart Price:</span>
+									<SAR price={totalCartPrice / 4} />
 								</p>
 							</div>
-
-							<button
-								onClick={clearCart}
-								className="text-white my-2 ml-2 font-semibold border rounded-md bg-green-600 p-2 hover:bg-green-400 duration-300"
-							>
-								Clear Cart
-							</button>
+							<div className="flex">
+								<button
+									onClick={clearCart}
+									className="text-white mr-3 font-semibold border rounded-md bg-green-600 p-2  hover:bg-green-400 duration-300"
+								>
+									Clear Cart
+								</button>
+								<Link
+									to="/payment"
+									className="text-white font-semibold border rounded-md bg-green-600 p-2  hover:bg-green-400 duration-300"
+								>
+									Go to checkout
+								</Link>
+							</div>
 						</div>
 						{allProducts?.map((product) => (
 							<div key={product.id} className="flex justify-between">
 								<div className="flex items-center justify-center mb-2">
-									<figure>
-										<img
-											src={product.product.imageCover}
-											alt={product.product.title}
-											className="w-40 h-48 mr-3"
-										/>
-									</figure>
+									<Link
+										to={`/productDetails/${product.product.id}/${product.product.category.name}}`}
+									>
+										<figure>
+											<img
+												src={product.product.imageCover}
+												alt={product.product.title}
+												className="w-40 h-48 mr-3"
+											/>
+										</figure>
+									</Link>
 
 									<article>
 										<p className="font-semibold text-lg">
 											{product.product.title.split(" ").slice(0, 7).join(" ")}
 										</p>
 										<p className="text-green-500 font-semibold">
-											price: {product.price / 4}
+											<SAR color="#22c55e" price={product.price / 4} />
 										</p>
+
 										<button
 											onClick={() => myDeleteItem(product.product.id)}
 											className="text-white my-2  font-semibold border rounded-md bg-green-600 p-2 hover:bg-green-400 duration-300"
 										>
-											<FontAwesomeIcon icon={faTrashCan} className="mr-2" />
+											{isPushed ? (
+												<PulseLoader
+													size={12}
+													color="white"
+													speedMultiplier={0.8}
+												/>
+											) : (
+												<>
+												<FontAwesomeIcon icon={faTrashCan} className="mr-2" />
 											Remove
+											</>
+											)}
+											
 										</button>
 									</article>
 								</div>
+
 								<div className="flex justify-center  items-center">
 									<button
 										onClick={() =>

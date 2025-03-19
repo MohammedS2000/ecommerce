@@ -5,22 +5,31 @@ import "slick-carousel/slick/slick-theme.css";
 import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
 import { RotateLoader } from "react-spinners";
+import { Link } from "react-router-dom";
 
 export default function SimpleSlider() {
 
    async function categorySlider() {
         return await axios.get("https://ecommerce.routemisr.com/api/v1/categories")
+    
+        
     }
 
     const {isLoading , data} = useQuery({
 		queryKey: ['categorySlider'],
 		queryFn: categorySlider});
 
+    
+    
+
         if (isLoading) {
 		return<div className="flex w-full h-full absolute bg-white justify-center items-center">
 					<RotateLoader color="#22c55e" size={40} margin={20}/>
 				</div>
 	}
+
+  
+  
     
   var settings = {
     dots: true,
@@ -58,14 +67,21 @@ export default function SimpleSlider() {
   };
 
   return (
-    <Slider {...settings}>
-        {data.data.data.map((category) => (
-            <div key={category.name} className="pb-4 px-1 ">
-        <img src={category.image} alt="product-image" className="w-full rounded-md cursor-pointer hover:border-green-500 hover:border h-44 mb-1"/>
-        <h3 className="text-lg font-semibold mb-1">{category.name}</h3>
-      </div>
-        ))}
-      
-    </Slider>
-  );
+			<Slider {...settings}>
+				{data.data.data.map((category) => (
+					<Link
+						to={`/categories/${category._id}/${category.name}`}
+						key={category.name}
+						className="pb-4 px-1 "
+					>
+						<img
+							src={category.image}
+							alt="product-image"
+							className="w-full rounded-md cursor-pointer hover:border-green-500 hover:border h-44 mb-1"
+						/>
+						<h3 className="text-lg font-semibold text-center mb-1">{category.name}</h3>
+					</Link>
+				))}
+			</Slider>
+		);
 }

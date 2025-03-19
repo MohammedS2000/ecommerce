@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { useContext } from "react";
+import React from "react";
 import { RotateLoader } from "react-spinners";
 import { faStar } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -7,26 +7,12 @@ import SAR from "../component/SAR";
 import { useQuery } from "@tanstack/react-query";
 import SimpleSlider from "../component/Slider";
 import {Link} from "react-router-dom";
-import { cartContext } from "../context/CartContext";
-import toast from "react-hot-toast";
+
 
 
 export default function Home() {
 
-	const {addProductToCart} = useContext(cartContext)
 
-	async function addProduct(id) {
-		const res = await addProductToCart(id);
-
-		
-		if (res) {
-        toast.success('Added Successfuly', {duration: 1500, position: 'top-center'})
-    }
-    else {
-        toast.error('Error Occurred', {duration: 1500, position: 'top-center'})
-    }
-    
-	}
 	
 	async function getAllProducts() {
 		return await axios.get("https://ecommerce.routemisr.com/api/v1/products");
@@ -37,6 +23,9 @@ export default function Home() {
 		queryKey: ['getAllProducts'],
 		queryFn: getAllProducts,
 	});
+
+	console.log(data);
+	
 	
 	
 
@@ -49,7 +38,6 @@ export default function Home() {
 	return (
 		<>
 			<div className="container mx-auto my-8">
-				
 				<SimpleSlider />
 				<div className="grid grid-cols-2 mt-7  md:grid-cols-4 lg:grid-cols-6 gap-4">
 					{data.data.data.map((product) => (
@@ -90,12 +78,7 @@ export default function Home() {
 									</div>
 								</div>
 							</Link>
-							<button
-								onClick={() => addProduct(product.id)}
-								className="text-white my-2  font-semibold border rounded-md bg-green-600 p-2 hover:bg-green-400 duration-300 w-full"
-							>
-								Add to cart
-							</button>
+							
 						</div>
 					))}
 				</div>
